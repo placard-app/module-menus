@@ -10,7 +10,7 @@ visible if a place's category changes.
 
 ## Requirements and permissions
 
-- A Placard **SDK 1** host (`sdkVersion: 1.0.0`) with the `place-sections` and
+- A Placard **SDK 0.2.0+** host (`sdkVersion: 0.2.0`) with the `place-sections` and
   `persistent-data` capabilities.
 - Manifest permission: `places.read`.
 - Only the place owner can create, edit or delete menus and upload item images.
