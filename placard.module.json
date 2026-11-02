@@ -1,0 +1,48 @@
+{
+  "id": "places.menus",
+  "name": "Menus",
+  "version": "0.1.0",
+  "description": "Read and edit restaurant menus manually or through MCP.",
+  "permissions": [
+    "places.read"
+  ],
+  "nav": [],
+  "source": "upload",
+  "sdkVersion": "1.0.0",
+  "requiredCapabilities": [
+    "place-sections",
+    "persistent-data"
+  ],
+  "serverEntry": "./server/index.js",
+  "webEntry": "./web/index.js",
+  "webRoutes": [],
+  "placeSections": [
+    {
+      "id": "menus",
+      "label": "Menus",
+      "exportName": "MenuSection"
+    }
+  ],
+  "mcpTools": [
+    {
+      "name": "get_menus",
+      "description": "Read menus, stable IDs and revisions for a place."
+    },
+    {
+      "name": "save_menu",
+      "description": "Atomically create or explicitly replace a complete menu."
+    },
+    {
+      "name": "upsert_menu_items",
+      "description": "Add or update items in existing sections."
+    },
+    {
+      "name": "delete_menu_items",
+      "description": "Remove specified menu items."
+    },
+    {
+      "name": "delete_menu",
+      "description": "Delete one menu."
+    }
+  ]
+}

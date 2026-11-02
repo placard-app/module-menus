@@ -1,0 +1,32 @@
+{
+  "name": "@placard-official/places.menus",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Structured restaurant menus for Placard",
+  "engines": {
+    "node": ">=24"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "build:zip": "node ./scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@playwright/test": "1.64.1",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.2.0",
+    "esbuild": "^0.28.2",
+    "fflate": "^0.8.3",
+    "react": "^19.2.0",
+    "react-router": "^7.9.0",
+    "typescript": "6.0.3"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "license": "AGPL-3.0-only"
+}
