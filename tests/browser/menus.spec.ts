@@ -31,7 +31,7 @@ for (const mobile of [false, true]) {
         headers,
         data: {
           filename: "places.menus.zip",
-          contentBase64: readFileSync("dist/places.menus-0.1.0.zip").toString("base64"),
+          contentBase64: readFileSync("dist/places.menus-0.2.0.zip").toString("base64"),
         },
       })
     expect((await upload()).ok()).toBeTruthy()

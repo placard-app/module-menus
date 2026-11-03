@@ -241,7 +241,7 @@ It writes host module/media data under this module's `test-results/` directory.
 Browser tests are not part of the root `pnpm test` or release workflow.
 
 See the [workspace release instructions](../../README.md#release-one-module) for
-tags such as `places.menus@0.1.0`.
+tags such as `places.menus@0.2.0`.
 
 ## Troubleshooting
 
