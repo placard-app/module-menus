@@ -1,6 +1,9 @@
 node_modules/
-dist/
 pack/
+dist/
+.DS_Store
+*.log
 *.sqlite*
 test-results/
 playwright-report/
+.host/
