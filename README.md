@@ -24,23 +24,22 @@ host's React web bridge. No separate server or core database migration is needed
 In **Settings → Module marketplace → Install from GitHub**, paste:
 
 ```text
-https://github.com/JobiJoba/plugins#places.menus
+https://github.com/placard-app/module-menus
 ```
 
 Enable the module and make it visible for your account. Open a restaurant, café
-or bar to find the Menus section. Keep the `#places.menus` selector so the installer
-selects Menus releases in this multi-module repository.
+or bar to find the Menus section. 
 
 Alternatively, upload Menus' `.placard-module` or `.zip` from
-[Releases](https://github.com/JobiJoba/plugins/releases). To build locally, run
+[Releases](https://github.com/placard-app/module-menus/releases). To build locally, run
 from the repository root:
 
 ```sh
 pnpm install
-pnpm --filter @placard-official/places.menus build
+pnpm build
 ```
 
-Upload `plugins/places.menus/dist/places.menus-<version>.zip` or the equivalent
+Upload `dist/places.menus-<version>.zip` or the equivalent
 `.placard-module`. The version comes from `placard.module.json`; both archives
 contain the same package. Local installation does not require a GitHub Release.
 
@@ -187,9 +186,9 @@ Requires Node.js 24+ and pnpm 12.4.1. Run from the repository root:
 
 ```sh
 pnpm install
-pnpm --filter @placard-official/places.menus typecheck
-pnpm --filter @placard-official/places.menus test
-pnpm --filter @placard-official/places.menus build
+pnpm typecheck
+pnpm test
+pnpm build
 ```
 
 Unit tests cover validation, revision conflicts, retry protection, permission
@@ -221,17 +220,17 @@ checkout with its dependencies installed. By default, it expects a sibling
 `Placard` directory beside this repository. From the repository root:
 
 ```sh
-pnpm --dir ../Placard --filter @placard/web build
-pnpm --filter @placard-official/places.menus build
-pnpm --filter @placard-official/places.menus exec playwright install chromium
-pnpm --filter @placard-official/places.menus test:e2e
+pnpm --dir ../core --filter @placard/web build
+pnpm build
+pnpm exec playwright install chromium
+pnpm test:e2e
 ```
 
 For another checkout, set `PLACARD_CORE_DIR` to its absolute path when running the
 suite, and build that checkout's web package first:
 
 ```sh
-PLACARD_CORE_DIR=/absolute/path/to/Placard pnpm --filter @placard-official/places.menus test:e2e
+PLACARD_CORE_DIR=/absolute/path/to/Placard pnpm test:e2e
 ```
 
 The suite starts a real host on port 3100 using the core's test server and a
@@ -260,3 +259,7 @@ tags such as `places.menus@0.2.0`.
 ## License
 
 [GNU Affero General Public License v3 only](LICENSE) (`AGPL-3.0-only`).
+
+## Standalone releases
+
+Install from https://github.com/placard-app/module-menus. Merge the manifest and package version change through a pull request. Tag the merged commit as `places.menus@<version>` to publish both archives.

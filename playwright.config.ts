@@ -1,6 +1,6 @@
 import { defineConfig } from "@playwright/test"
 import { resolve } from "node:path"
-const core = process.env.PLACARD_CORE_DIR ?? "../../../Placard"
+const core = process.env.PLACARD_CORE_DIR ?? "../core"
 export default defineConfig({
   testDir: "tests/browser",
   workers: 1,

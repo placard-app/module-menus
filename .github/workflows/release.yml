@@ -1,0 +1,59 @@
+name: Release module
+on:
+  push:
+    tags: ['places.menus@*']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Verify release tag and branch
+        run: |
+          git merge-base --is-ancestor HEAD origin/main
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs'
+          const read = path => JSON.parse(readFileSync(path, 'utf8'))
+          const manifest = read('placard.module.json')
+          if (manifest.id !== 'places.menus' || manifest.version !== read('package.json').version ||
+              process.env.GITHUB_REF_NAME !== manifest.id + '@' + manifest.version) {
+            throw new Error('Release tag, manifest identity and package version must agree')
+          }
+          JS
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - name: Validate both archives
+        run: |
+          stem=$(node -p "'dist/' + require('./placard.module.json').id + '-' + require('./package.json').version")
+          cmp "$stem.zip" "$stem.placard-module"
+          unzip -tq "$stem.zip"
+          unzip -p "$stem.zip" placard.module.json | cmp placard.module.json -
+          unzip -Z1 "$stem.zip" | grep -Fx server/index.js
+          unzip -Z1 "$stem.zip" | grep -Fx web/index.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: module
+          path: dist/*
+  publish:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: module
+          path: dist
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes dist/*.zip dist/*.placard-module

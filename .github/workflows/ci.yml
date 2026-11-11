@@ -1,0 +1,46 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - name: Validate both archives
+        run: |
+          stem=$(node -p "'dist/' + require('./placard.module.json').id + '-' + require('./package.json').version")
+          cmp "$stem.zip" "$stem.placard-module"
+          unzip -tq "$stem.zip"
+          unzip -p "$stem.zip" placard.module.json | cmp placard.module.json -
+          unzip -Z1 "$stem.zip" | grep -Fx server/index.js
+          unzip -Z1 "$stem.zip" | grep -Fx web/index.js
+      - name: Locate the Placard test host
+        id: host
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api repositories/1434885910 --jq '"repository="+.full_name' >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ steps.host.outputs.repository }}
+          ref: ea952532dc38c08b40743ccb47e94f70aa30d52d
+          path: .host
+          persist-credentials: false
+      - run: pnpm --dir .host install --frozen-lockfile
+      - run: pnpm --dir .host --filter @placard/web build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+        env:
+          PLACARD_CORE_DIR: ${{ github.workspace }}/.host
