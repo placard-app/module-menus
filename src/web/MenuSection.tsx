@@ -1,10 +1,8 @@
+import styles from "./menu.css"
 import { useEffect, useState } from "react"
 import type { Item, Menu, Section } from "../shared/menu.ts"
 
 type Props = { placeId: string; category: string; isOwner: boolean }
-const styles = `
-.pm{border-top:1px solid color-mix(in srgb,currentColor 18%,transparent);padding-top:24px;display:grid;gap:16px}.pm *{box-sizing:border-box}.pm header,.pm .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pm header h2{flex:1;font-size:1.2rem;font-weight:600}.pm button{min-height:44px;padding:8px 12px;border:1px solid color-mix(in srgb,currentColor 24%,transparent);border-radius:6px;background:transparent;color:inherit;cursor:pointer}.pm button:disabled{opacity:.45;cursor:default}.pm button[aria-pressed=true]{background:color-mix(in srgb,currentColor 14%,transparent)}.pm label{display:grid;gap:4px;font-size:.875rem;flex:1;min-width:130px}.pm input,.pm textarea{width:100%;min-height:44px;padding:8px;border:1px solid color-mix(in srgb,currentColor 25%,transparent);border-radius:4px;background:transparent;color:inherit}.pm form,.pm fieldset{display:grid;gap:12px;min-width:0}.pm fieldset{border:1px solid color-mix(in srgb,currentColor 20%,transparent);padding:12px;border-radius:6px}.pm legend{padding:0 6px}.pm .item{padding:12px 0;border-bottom:1px solid color-mix(in srgb,currentColor 12%,transparent)}.pm .item-title{display:flex;justify-content:space-between;gap:16px;font-weight:500}.pm small,.pm .muted{opacity:.7}.pm [role=alert]{color:#c65b45}.pm a{text-decoration:underline}.pm h3{font-weight:600;margin:16px 0 8px}.pm .item p{white-space:pre-wrap}.pm .row.variant{align-items:flex-end}.pm .item-image{display:block;width:180px;max-width:100%;height:130px;object-fit:cover;border-radius:6px;margin:8px 0}.pm input[type=file]{min-width:0}.pm .actions{display:flex;gap:8px;flex-wrap:wrap}
-`
 async function call<T>(operation: string, input: unknown): Promise<T> {
   const response = await fetch(`/api/m/places.menus/${operation}`, {
     method: "POST",
@@ -26,6 +24,40 @@ function move<T>(items: T[], index: number, delta: number): T[] {
   ;[next[index], next[to]] = [next[to], next[index]]
   return next
 }
+function RemoveButton({
+  label,
+  disabled,
+  onClick,
+}: {
+  label: string
+  disabled?: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      className="remove"
+      type="button"
+      aria-label={label}
+      title={label}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      <svg
+        aria-hidden="true"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M4 7h16M10 11v6m4-6v6M5.5 7l1 12a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2l1-12M9 7V4h6v3" />
+      </svg>
+    </button>
+  )
+}
 function Order({
   index,
   length,
@@ -35,20 +67,28 @@ function Order({
   length: number
   change: (delta: number) => void
 }) {
+  if (length < 2) return null
   return (
-    <>
-      <button type="button" aria-label="Move up" disabled={index === 0} onClick={() => change(-1)}>
+    <span className="order">
+      <button
+        type="button"
+        title="Move up"
+        aria-label="Move up"
+        disabled={index === 0}
+        onClick={() => change(-1)}
+      >
         ↑
       </button>
       <button
         type="button"
+        title="Move down"
         aria-label="Move down"
         disabled={index === length - 1}
         onClick={() => change(1)}
       >
         ↓
       </button>
-    </>
+    </span>
   )
 }
 function Field({
@@ -231,7 +271,7 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
       <header>
         <h2>Menus</h2>
         {isOwner && !draft && (
-          <button onClick={create} disabled={busy}>
+          <button className="primary" onClick={create} disabled={busy}>
             + Add menu
           </button>
         )}
@@ -264,7 +304,7 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
       )}
       {!draft && (
         <>
-          <div className="row" aria-label="Choose menu">
+          <div className="menu-tabs" role="group" aria-label="Choose menu">
             {menus?.map((menu) => (
               <button
                 key={menu.id}
@@ -282,7 +322,7 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
             <>
               {selected.notes && <p>{selected.notes}</p>}
               {selected.sections.map((section) => (
-                <div key={section.id}>
+                <div className="course" key={section.id}>
                   <h3>{section.name}</h3>
                   {section.notes && <p>{section.notes}</p>}
                   {section.items.map((item) => (
@@ -301,12 +341,16 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
                       )}
                       {item.description && <p>{item.description}</p>}
                       {item.variants.map((variant, i) => (
-                        <p key={i}>
+                        <p className="variant-line" key={i}>
                           {variant.name}: {variant.price} {selected.currency}
                         </p>
                       ))}
                       {item.dietaryLabels.length > 0 && (
-                        <small>{item.dietaryLabels.join(" · ")}</small>
+                        <ul className="dietary">
+                          {item.dietaryLabels.map((label, index) => (
+                            <li key={index}>{label}</li>
+                          ))}
+                        </ul>
                       )}
                       {item.notes && (
                         <p>
@@ -331,7 +375,11 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
               </small>
               {isOwner && (
                 <div className="actions">
-                  <button disabled={busy} onClick={() => setDraft(structuredClone(selected))}>
+                  <button
+                    className="secondary"
+                    disabled={busy}
+                    onClick={() => setDraft(structuredClone(selected))}
+                  >
                     Edit menu
                   </button>
                   <Order
@@ -342,11 +390,15 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
                       void save({ ...selected, sortOrder: index })
                     }}
                   />
-                  <button disabled={busy} onClick={() => setConfirmDelete(true)}>
-                    Delete menu
-                  </button>
+                  {!confirmDelete && (
+                    <RemoveButton
+                      label="Delete menu"
+                      disabled={busy}
+                      onClick={() => setConfirmDelete(true)}
+                    />
+                  )}
                   {confirmDelete && (
-                    <>
+                    <div className="confirm">
                       <span>Delete {selected.name}?</span>
                       <button
                         disabled={busy}
@@ -361,7 +413,7 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
                         Confirm delete
                       </button>
                       <button onClick={() => setConfirmDelete(false)}>Keep menu</button>
-                    </>
+                    </div>
                   )}
                 </div>
               )}
@@ -427,17 +479,15 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
                       setDraft({ ...draft, sections: move(draft.sections, sectionIndex, delta) })
                     }
                   />
-                  <button
-                    type="button"
+                  <RemoveButton
+                    label="Remove section"
                     onClick={() =>
                       setDraft({
                         ...draft,
                         sections: draft.sections.filter((_, i) => i !== sectionIndex),
                       })
                     }
-                  >
-                    Remove section
-                  </button>
+                  />
                 </div>
                 {section.items.map((item, itemIndex) => {
                   const change = (patch: Partial<Item>) =>
@@ -531,14 +581,12 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
                               })
                             }
                           />
-                          <button
-                            type="button"
+                          <RemoveButton
+                            label="Remove variant"
                             onClick={() =>
                               change({ variants: item.variants.filter((_, i) => i !== vi) })
                             }
-                          >
-                            Remove variant
-                          </button>
+                          />
                         </div>
                       ))}
                       <div className="actions">
@@ -560,17 +608,15 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
                             })
                           }
                         />
-                        <button
-                          type="button"
+                        <RemoveButton
+                          label="Remove item"
                           onClick={() =>
                             updateSection(sectionIndex, {
                               ...section,
                               items: section.items.filter((_, i) => i !== itemIndex),
                             })
                           }
-                        >
-                          Remove item
-                        </button>
+                        />
                       </div>
                     </fieldset>
                   )
@@ -603,7 +649,9 @@ export function MenuSection({ placeId, category, isOwner }: Props) {
               Add section
             </button>
             <div className="actions">
-              <button type="submit">{busy ? "Saving…" : "Save menu"}</button>
+              <button className="primary" type="submit">
+                {busy ? "Saving…" : "Save menu"}
+              </button>
               <button
                 type="button"
                 onClick={() => {

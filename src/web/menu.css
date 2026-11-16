@@ -1,0 +1,274 @@
+.pm {
+  --menu-ink: var(--foreground, #251f19);
+  --menu-muted: var(--muted-foreground, #655d54);
+  --menu-line: var(--border, #dcd2c4);
+  --menu-paper: var(--card, #faf6ef);
+  --menu-accent: var(--primary, #8b3a2a);
+  color: var(--menu-ink);
+  border-top: 1px solid var(--menu-line);
+  padding-top: 28px;
+  display: grid;
+  gap: 18px;
+  overflow-wrap: anywhere;
+}
+.pm *,
+.pm *::before {
+  box-sizing: border-box;
+}
+.pm h2,
+.pm h3,
+.pm p,
+.pm ul {
+  margin: 0;
+}
+.pm header,
+.pm .row,
+.pm .actions,
+.pm .menu-tabs,
+.pm .confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.pm header {
+  justify-content: space-between;
+}
+.pm h2 {
+  font-size: 1.25rem;
+  font-weight: 650;
+}
+.pm button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--menu-accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.pm button:enabled:hover {
+  background: color-mix(in srgb, var(--menu-accent) 9%, transparent);
+}
+.pm button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.pm :is(button, input, a):focus-visible {
+  outline: 2px solid var(--menu-accent);
+  outline-offset: 2px;
+}
+.pm button.primary {
+  padding-inline: 18px;
+  background: var(--menu-accent);
+  color: var(--primary-foreground, #faf6ef);
+}
+.pm button.primary:enabled:hover {
+  background: color-mix(in srgb, var(--menu-accent) 88%, black);
+}
+.pm button.secondary {
+  background: var(--secondary, #e7dfd3);
+  color: var(--menu-ink);
+}
+.pm button.remove,
+.pm .order button {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  padding: 0;
+  color: var(--menu-muted);
+}
+.pm button.remove {
+  margin-inline-start: auto;
+}
+.pm button.remove:hover {
+  color: var(--destructive, #9b2c1f);
+}
+.pm .order {
+  display: inline-flex;
+  gap: 2px;
+}
+.pm .menu-tabs {
+  gap: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--menu-line);
+}
+.pm .menu-tabs:empty {
+  display: none;
+}
+.pm .menu-tabs button {
+  color: var(--menu-muted);
+  border-radius: 30px;
+  padding-inline: 16px;
+}
+.pm .menu-tabs button[aria-pressed="true"] {
+  color: var(--menu-accent);
+  background: color-mix(in srgb, var(--menu-accent) 10%, var(--menu-paper));
+}
+.pm .course {
+  padding: clamp(16px, 3vw, 26px);
+  border-radius: 16px;
+  background: var(--menu-paper);
+  border: 1px solid var(--menu-line);
+}
+.pm .course h3 {
+  font:
+    600 1.5rem / 1.2 Georgia,
+    serif;
+  margin-bottom: 6px;
+}
+.pm .item {
+  display: grid;
+  gap: 6px;
+  padding-block: 16px;
+}
+.pm .item + .item {
+  border-top: 1px solid var(--menu-line);
+}
+.pm .item:last-child {
+  padding-bottom: 0;
+}
+.pm .item-title {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: baseline;
+  font-weight: 650;
+}
+.pm .item-title span:last-child {
+  font-variant-numeric: tabular-nums;
+  color: var(--menu-accent);
+}
+.pm .item p,
+.pm .course > p {
+  white-space: pre-wrap;
+  line-height: 1.55;
+  color: var(--menu-muted);
+}
+.pm small,
+.pm .muted,
+.pm .variant-line {
+  color: var(--menu-muted);
+  font-size: 0.875rem;
+}
+.pm .dietary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  list-style: none;
+  padding: 0;
+}
+.pm .dietary li {
+  background: var(--secondary, #e7dfd3);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+.pm .item-image {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-block: 5px;
+}
+.pm a {
+  text-decoration: underline;
+}
+.pm [role="alert"] {
+  color: var(--destructive, #9b2c1f);
+}
+.pm .confirm {
+  flex-basis: 100%;
+  padding: 10px;
+  background: var(--menu-paper);
+  border-radius: 10px;
+}
+.pm form,
+.pm fieldset {
+  display: grid;
+  min-width: 0;
+  gap: 16px;
+}
+.pm fieldset {
+  margin: 0;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--menu-accent) 5%, var(--menu-paper));
+}
+.pm fieldset fieldset {
+  background: var(--menu-paper);
+  border: 1px solid var(--menu-line);
+}
+.pm fieldset fieldset fieldset {
+  border: 0;
+  border-top: 1px solid var(--menu-line);
+  border-radius: 0;
+  padding: 16px 0 0;
+}
+.pm legend {
+  padding: 0 6px;
+  font-weight: 650;
+}
+.pm .row {
+  gap: 12px;
+  align-items: end;
+}
+.pm label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  min-width: 0;
+}
+.pm .row label {
+  flex: 1 1 130px;
+}
+.pm input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid var(--menu-line);
+  border-radius: 9px;
+  background: #fffdf9;
+  color: var(--menu-ink);
+  font: inherit;
+  font-weight: 400;
+}
+.pm input[type="file"] {
+  padding: 7px;
+  font-size: 0.82rem;
+}
+.pm input::file-selector-button {
+  border: 0;
+  border-radius: 5px;
+  padding: 6px 9px;
+  margin-right: 8px;
+  background: var(--secondary, #e7dfd3);
+  color: var(--menu-ink);
+  cursor: pointer;
+}
+.pm fieldset > button {
+  justify-self: start;
+}
+.pm .actions {
+  gap: 4px;
+}
+@media (max-width: 480px) {
+  .pm fieldset {
+    padding: 12px;
+  }
+  .pm .row label {
+    flex-basis: 110px;
+  }
+  .pm .row.variant {
+    gap: 6px;
+  }
+}
