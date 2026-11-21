@@ -220,7 +220,7 @@ checkout with its dependencies installed. By default, it expects a sibling
 `Placard` directory beside this repository. From the repository root:
 
 ```sh
-pnpm --dir ../core --filter @placard/web build
+pnpm --dir ../Placard --filter @placard/web build
 pnpm build
 pnpm exec playwright install chromium
 pnpm test:e2e
