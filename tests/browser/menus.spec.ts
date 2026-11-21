@@ -26,12 +26,13 @@ for (const mobile of [false, true]) {
         (await page.request.post("/api/auth/sign-in/email", { data: account, headers })).ok(),
       ).toBeTruthy()
     }
+    const { version } = JSON.parse(readFileSync("placard.module.json", "utf8"))
     const upload = () =>
       page.request.post("/api/modules/upload", {
         headers,
         data: {
           filename: "places.menus.zip",
-          contentBase64: readFileSync("dist/places.menus-0.2.0.zip").toString("base64"),
+          contentBase64: readFileSync(`dist/places.menus-${version}.zip`).toString("base64"),
         },
       })
     expect((await upload()).ok()).toBeTruthy()
