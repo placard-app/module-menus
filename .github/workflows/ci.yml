@@ -41,6 +41,15 @@ jobs:
       - run: pnpm --dir .host install --frozen-lockfile
       - run: pnpm --dir .host --filter @placard/web build
       - run: pnpm exec playwright install --with-deps chromium
+      - name: Pull the test database image
+        run: docker pull imresamu/postgis:18-3.6
       - run: pnpm test:e2e
         env:
           PLACARD_CORE_DIR: ${{ github.workspace }}/.host
+          DEBUG: testcontainers*
+      - uses: actions/upload-artifact@v5
+        if: failure()
+        with:
+          name: browser-test-results
+          path: test-results/
+          retention-days: 7

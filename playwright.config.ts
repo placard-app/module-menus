@@ -1,6 +1,6 @@
 import { defineConfig } from "@playwright/test"
 import { resolve } from "node:path"
-const core = process.env.PLACARD_CORE_DIR ?? "../core"
+const core = process.env.PLACARD_CORE_DIR ?? "../Placard"
 export default defineConfig({
   testDir: "tests/browser",
   workers: 1,
@@ -9,6 +9,7 @@ export default defineConfig({
     command: `node ${resolve(core, "apps/server/test/e2e-server.ts")}`,
     url: "http://localhost:3100/api/health",
     timeout: 180000,
+    stdout: "pipe",
     env: {
       ...process.env,
       PORT: "3100",
